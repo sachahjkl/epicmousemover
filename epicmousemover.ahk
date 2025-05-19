@@ -5,6 +5,7 @@ global isRunning := false
 global angle := 0
 global timerInterval := 50 ; 20 times per second
 global Pi := 3.141592653589793
+global prevExecState := 0
 
 A_IconTip := "EpicMouseMover v2 by elite hacker 2hourpause"
 
@@ -14,8 +15,6 @@ A_TrayMenu.Add("Toggle Jitter", ToggleJitter)
 A_TrayMenu.Add("Exit", (*) => ExitApp())
 A_TrayMenu.Default := "Toggle Jitter"
 A_TrayMenu.ClickCount := 1
-
-TraySetIcon(A_ScriptDir "\epicmousemover.ico")
 
 ; Prompt on startup
 if MsgBox("Start mouse jitter?", "EpicMouseMover v2 by elite hacker 2hourpause", "YesNo") = "Yes" {
@@ -35,16 +34,18 @@ ToggleJitter(*) {
 }
 
 StartJitter() {
-    global isRunning
+    global isRunning, prevExecState
     isRunning := true
+    prevExecState := DllCall("SetThreadExecutionState", "UInt", 0x80000003, "UInt")
     SetTimer(UpdateMousePosition, timerInterval)
     ShowTooltip("Jitter started (Press 'Ctrl+Alt+M' to stop)")
 }
 
 StopJitter() {
-    global isRunning
+    global isRunning, prevExecState
     isRunning := false
     SetTimer(UpdateMousePosition, 0)
+    DllCall("SetThreadExecutionState", "UInt", 0x80000000, "UInt")
     ShowTooltip("Jitter stopped (Press 'Ctrl+Alt+M' to start)")
 }
 
