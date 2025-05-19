@@ -1,0 +1,2 @@
+name=epicmousemover
+description=Mouse jitter written in AutoHotkey v2. Troll project oneshotted by GPT 4o. I'm not responsible if you use this tool
